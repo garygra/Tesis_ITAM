@@ -34,6 +34,7 @@
 \parskip 1ex
 \renewcommand{\baselinestretch}{1.33}
 
+
 % Usar numeros romanos en las subsecciones
 \renewcommand\thesubsubsection{\Roman{subsubsection}}
 \setcounter{secnumdepth}{3}
@@ -63,20 +64,23 @@
 \renewcommand\year[1]{\renewcommand\@year{#1}} %Report ya tiene un comando \year
 \newcommand\theyear{\@year}
 
-% Comandos de titulo y autor
-\newcommand\thetitle{\@title}
-\newcommand\theauthor{\@author}
-\newcommand\thethesis{\@thesis}
 
 % Portada 
 \renewcommand\maketitle{%
 	\InputIfFileExists {Aux_files/portada.tex} {\ClassInfo {tesisITAM} {portada.tex loaded}} {\ClassError{tesisITAM}{portada.tex not found!}}
 }
-
 % Derechos itam
 \newcommand\publicationrights{%
 	\InputIfFileExists {Aux_files/derechos.tex} {\ClassInfo {tesisITAM} {derechos.tex loaded}} {\ClassError{tesisITAM} {derechos.tex not found!}}
 }
+
+
+% \global\let\newpage\newpagegood
+
+% Comandos de titulo y autor
+\newcommand\thetitle{\@title}
+\newcommand\theauthor{\@author}
+\newcommand\thethesis{\@thesis}
 
 % Resumen(es)
 \AtBeginDocument{\@ifpackageloaded{babel}{%
