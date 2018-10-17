@@ -1,0 +1,43 @@
+%!TEX root = ../main.tex
+\chapter{CONCLUSIONES Y TRABAJO FUTURO}
+\label{ch:conclusiones}
+
+
+
+% Conclusiones \par
+
+
+
+% \section{Diseño}
+El diseño del robot omnidireccional presentado en éste trabajo es una solución modular enfocada a la Robocup \gls{SSL} a bajo costo. La arquitectura modular de la solución facilita la actualización de los sistemas que la conforman y permite reemplazar sistemas completos si alguna aplicación futura así lo requiere.
+El diseño se realizó para utilizar \gls{MDF} para la manufactura de las piezas.
+% Como desde una etapa temprana se identificó la posibilidad de utilizar \gls{MDF} para realizar la manufactura de las piezas, después de validar su viabilidad, el diseño se realizó específicamente para usar ésta tecnología.  \par
+
+El diseño y fabricación de una rueda propia permite un importante ahorro de espacio, además de reducir el costo total. El diseño de la rueda lo conforman pocas piezas únicas, facilitando su ensamblado. Adicionalmente, en las diversas pruebas realizadas no se han reportado fracturas en las ruedas. Si bien el sistema \textit{Movimiento} es el más caro, también es un sistema crítico que requiere de componentes de alta calidad para funcionar adecuadamente. 
+
+
+La carcasa representó un reto importante debido al tamaño de las piezas. La solución encontrada (utilizar plástico \gls{HIPS} en lugar de \gls{ABS}) favorece la resistencia a impactos de las piezas. La carcasa ha recibido múltiples impactos durante las pruebas que se han realizado y no se han reportado daños.
+
+
+Los aditamentos para la pelota son efectivos. Para el caso del \gls{Kicker}, aunque el componente realizado con \gls{ABS} es capaz de patear la pelota a alta velocidad, se debería explorar con otros materiales que transfieran mejor la energía (como algún metal). Similarmente, en el caso del \gls{Dribbler}, se pueden explorar otros materiales para mejorar su capacidad de mantener la posesión de la pelota.
+
+
+El sistema de electrónica se encuentra modularizado por lo que ocupa mucho espacio. Si se quisiera liberar espacio (por ejemplo: para tener pilas que duren más), se debe hacer con un \textit{circuito impreso}. Adicionalmente, esta solución facilitaría el armado de los robots y detección de fallas. 
+
+
+Para el sistema de cómputo, la utilización de una \gls{FPGA} y un \gls{AVR} resulta muy adecuada principalmente por el número de entradas y salidas que se manejan en el sistema. Utilizando la \gls{FPGA} principalmente para manejar entradas y salidas, le permite al \gls{AVR} realizar rápidamente el cómputo para determinar la siguiente señal de control. Actualmente, por la forma en que se mide la velocidad real del motor, la frecuencia del sistema es relativamente baja (20 Hz). Si se modifica el método para calcular la velocidad real de los motores, la frecuencia del sistema se podría acelerar considerablemente, reflejándose en un mejor desempeño del robot.
+
+
+Una de las mayores limitantes que se tienen actualmente en el sistema es la determinación de las constantes $k_p$ y $k_i$ para ambos algoritmos de control implementados. Debido a que actualmente se determinan a \textit{prueba y error}, no se puede garantizar obtener valores óptimos. La implementación de un método que determine éstas constantes de manera automática disminuiría el error que presenta el robot en su movimiento. Adicionalmente, se puede considerar implementar algoritmos de aprendizaje de máquina en el sistema que controla el robot para que desde el sistema se compense el error del robot. 
+
+
+
+
+
+
+
+
+
+
+
+

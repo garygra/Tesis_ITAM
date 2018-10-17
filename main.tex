@@ -1,0 +1,113 @@
+%!TEX options = --shell-escape
+\documentclass{tesisITAM}
+\usepackage[utf8]{inputenc}
+\usepackage{epstopdf,epsfig}  
+\usepackage{hyperref}
+\usepackage[toc,acronyms]{glossaries} 
+\usepackage{apacite}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{graphicx}
+\usepackage{titlecaps}
+\usepackage[font=bf]{caption}
+\usepackage{rotating}
+\usepackage{subfig}
+\usepackage{multirow}
+\usepackage{blindtext}
+\usepackage{minted}
+
+
+% \input{Aux_files/Glossary}
+\loadglsentries{Aux_files/Glossary}
+\makeglossaries
+
+\mathtoolsset{showonlyrefs} 
+% \loadglsentries[main]{Aux_files/Glossary}
+% \include{Aux_files/Glossary}
+\graphicspath{ {Figures/} }
+\epstopdfsetup{outdir="Figures/"}
+
+
+\title{Título}
+\author{Autor}
+\degree{Ingeniero en $\ldots$}
+\advisor{Asesor}
+\year{Año}
+\setlength{\headheight}{13.1 pt}
+%
+% \glstoctrue
+
+\colorlet{shadecolor}{blue!20}
+
+\newcommand{\TODO}[1]{{\color{red}{ToDo: {#1}}}}
+\newcommand{\NOTE}[1]{{\color{blue}{Note: {#1}}}}
+\newcommand{\EXCISE}[1]{}
+
+\renewcommand{\refname}{Referencias}
+
+\begin{document}
+	
+	\maketitle
+	\hypersetup{pageanchor=false}
+	\publicationrights
+
+
+	%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%
+
+	\begin{abstract}{english}
+		En este trabajo se presenta el diseño e implementación de un robot móvil omnidireccional para aplicaciones colaborativas, tomando como marco de referencia la competencia Robocup Small Size League (SSL) utilizando la metodología ``Diseño y Desarrollo de Producto''. El modelo cinemático que describe el movimiento omnidireccional del robot es implementado con dos lazos cerrados de control a bordo del robot en una tarjeta de desarrollo MOJO la cual cuenta con una FPGA Spartan 6 XC6SLX9 y un microcontrolador ATmega32U4. Se presenta un experimento realizado sin sistema externo, uno utilizando un sistema externo para generación de comandos de velocidad y un tercer experimento para generación de trayectorias dinámicas. Los experimentos realizados ilustran el buen comportamiento del sistema diseñado. Por último, se realiza una comparación con cinco equipos participantes en Robocup SSL 2016.
+	\end{abstract}
+
+	% \begin{abstract}{english}
+	% 	Abstract English
+	% \end{abstract}
+
+	\selectlanguage{spanish}
+	
+	\pagenumbering{roman}
+
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	
+	\newpage
+
+	\pagenumbering{arabic}
+	
+	%%%%%%%%%%%%%%%%% Chapters %%%%%%%%%%%%%%%%%%%
+	
+	\include{Chapters/ch1}
+
+	\include{Chapters/ch2}
+
+% 	\include{Chapters/ch3}
+
+% 	\include{Chapters/ch4}
+
+% 	\include{Chapters/ch5}
+
+
+	%%%%%%%%%%%%%%%% appendix %%%%%%%%%%%%%%%%%%%%
+	\appendix
+	
+	%%%%%%%%%%%%%%%%% Glossary %%%%%%%%%%%%%%%%%%%
+	\clearpage
+% 	\include{Aux_files/Glossary.tex}
+% 	\include{Aux_files/Glossary}
+    \printglossary[type=\acronymtype, title={ACRONIMOS}] 
+	\printglossary[title={GLOSARIO}]
+% 	\printglossary
+    % \printglossaries[title={GLOSARIO}]
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%   
+	%%%%%%%%%%%%%%%%% BIBLIOGRAPHY %%%%%%%%%%%%%%%
+	\clearpage %
+	\phantomsection
+	
+	\bibliographystyle{apacite}
+
+	\bibliography{Aux_files/FuentesConsultadas} 
+	
+\end{document}

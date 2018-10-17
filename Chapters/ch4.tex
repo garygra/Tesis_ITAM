@@ -1,0 +1,486 @@
+%!TEX root = ../main.tex
+\chapter{RESULTADOS}
+\label{ch:res}
+
+En éste capítulo se presentan experimentos para evaluar el desempeño del robot. Primero, se hace una evaluación de los sistemas implementados. Posteriormente, se realizan pruebas a nivel de robot para observar el comportamiento de los lazos internos de control, el que opera a nivel de velocidades de motor y el que opera a nivel de velocidad de robot. Después se presentan experimentos utilizando un sistema externo para determinar la capacidad del sistema para alcanzar poses a lazo abierto y después a lazo cerrado con trayectorias dinámicas. Por último, se realiza una comparación entre la solución implementada y otros robots participantes en Robocup \gls{SSL}.
+
+% \NOTE{Primero probar los sistemas por separado.}
+
+% los resultados para cada uno de los sistemas del robot mencionados en el Capítulo \ref{ch:disenio_y_des}. En la Fig. \ref{fig:cad_vs_real} se muestra una comparación del modelo \gls{CAD} y el robot real implementado.
+
+
+
+\section{Resultados por Sistema}
+A continuación se muestran resultados relacionados al desempeño individual de cada sistema. Una comparación del ensamble completo con el modelo \gls{CAD} se muestra en la Fig. \ref{fig:cad_vs_real}.
+% \TODO{Falta...?}
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth]{realVS3D}
+	\caption{Robot Real vs Modelo CAD}
+	\label{fig:cad_vs_real}
+\end{sidewaysfigure}
+
+\subsection{Chasis}
+Manufacturar el chasis utilizando plástico \gls{HIPS} permitió utilizar piezas de grandes dimensiones sin tener deformaciones. El chasis ha soportado satisfactoriamente colisiones entre los robots así como contra objetos estáticos. La base del robot soporta a los demás sistemas y no ha presentado problemas que requieran reemplazar ésta pieza. El tener el \gls{SP} como parte del diseño de la tapa ha permitido eliminar problemas de lecturas erróneas de la visión que se presentaban con anteriores diseños de la tapa. Adicionalmente, por la capacidad de retirar la tapa para acceder a los otros sistemas, se facilita el intercambio de pilas e incluso apagar el robot rápidamente.
+
+\subsection{Energía}
+Tener tres baterías permite separar eléctricamente los circuitos y facilitar la detección de problemas. Al tener conectores distintos para cada tipo de batería se facilita la conexión de baterías y se minimiza la posibilidad de conexiones incorrectas. La batería que debe ser reemplazada con mayor frecuencia es la del controlador del \gls{Kicker} mientras que la que menos se reemplaza es la que alimenta al cómputo. El tiempo de duración mínimo de la batería de los motores es de 6.75 minutos, debido a que la utilización de los motores no es homogénea ni continua ni a las especificaciones máximas, su duración es mayor. La duración mínima de la batería del kicker es de 6.75 minutos si estuviera todo el tiempo en modo de carga; dado que en realidad la mayor parte del tiempo está en modo de mantener la carga, la duración de la batería es mayor.
+
+% El tiempo de duración real de la batería de los motores es mayor al calculado (6.75 minutos) debido a que la utilización de los motores no es homogénea ni continua ni a las especificaciones máximas. Para el \gls{Kicker} sucede lo mismo, ya que la mayor parte del tiempo el circuito está en modo de mantener la carga.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Movimiento}
+En la Fig. \ref{fig:mov_real} se muestra una de las cuatro \textit{instancias} del sistema de movimiento. La pieza principal de la rueda no ha presentado problemas aunque algunos \textit{o-rings} se han roto. Solo se han presentado  problemas con el sistema de engranes ocasionados por pelusa que se encuentra en la superficie de pruebas. Por la facilidad de remover cada rueda del resto del robot, el proceso de intercambio es rápido.
+ % cambiarlas entre pruebas de ser necesario además de permitir acceder al resto de los componentes fácilmente.
+
+% \TODO{Checar si falta completar algo...}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.6\textwidth]{movimiento_real}
+	\caption{Ensamble de la Rueda, Motor y Transmisión}
+	\label{fig:mov_real}
+\end{figure}
+% \TODO{Agregar más...?}
+
+\subsection{Aditamentos de Apoyo}
+Ambos aditamentos implementados han tenido buen desempeño en diversas pruebas realizadas. El \gls{Kicker} es capaz de patear la pelota a $1.5 \frac{m}{s}$. El \gls{Dribbler} es capaz de acercar la pelota lo suficiente para que el \gls{Kicker} le pegue. Ambos componentes son independientes del los otros componentes estructurales del robot (solamente dependen de la electrónica), pudiendo ser fácilmente reemplazados.
+
+
+\subsection{Cómputo}
+Las funciones implementadas en el sistema de cómputo son capaces de ejecutarse en menos de 10ms aunque por sincronización se tienen a una frecuencia de 20Hz. La visión determina la frecuencia del sistema al ser el sensor más lento.
+La utilización de una \gls{FPGA} con un \gls{AVR} a demostrado ser efectiva para controlar el robot. La \gls{FPGA} permite leer numerosas señales y procesarlas sin interferir en el tiempo de cómputo del \gls{AVR} además de tener mayor resolución en las señales de salida permitiendo mayor resolución en la señal de la velocidad deseada de cada motor. Al utilizar al \gls{AVR} exclusivamente para calcular las señales de control, se puede minimizar el tiempo total de cómputo por no requerir de interrupciones externas para adquirir señales. El XBee es capaz de recibir los mensajes del sistema externo a la frecuencia que se generan y transmitirlos a la FPGA. Como el reloj de la FPGA es más rápido que el del XBee, no se requieren de protocolos de control de flujo para la información recibida. 
+
+\subsection{Drivers}
+El driver de cada motor responde rápidamente ante cambios en la señal y no representan una fuente de calor importante. El driver del \gls{Kicker} es capaz de cargar el capacitor a 200V en menos de 5 segundos. Aunque representa una fuente de calor importante al interior del robot, esto no  han generado problemas. Debido a que no se cuenta con la capacidad de hacer circuitos impresos para la electrónica, actualmente esta ocupa mucho espacio y fácilmente se desconectan los cables. 
+
+
+
+\section{Resultados de la Integración de los Sistemas}
+Se presentan los resultados de tres tipos de pruebas realizadas. La primera prueba es a nivel robot para observar el comportamiento de los lazos de control internos del robot que operan a nivel motor y a nivel de la velocidad del robot.  
+
+La segunda prueba es para determinar la capacidad del robot de alcanzar poses sin lazos de control externos. Para la tercera prueba se reutiliza el mismo ambiente que con la segunda pero se cierra un tercer lazo de control en el sistema externo. Ésta prueba busca determinar la capacidad de respuesta del robot ante trayectorias dinámicas.
+
+\subsection{Pruebas a Nivel de Motor}
+En estas pruebas el robot recibe un vector de velocidad deseada $(X, Y,\theta)$ cuyos parámetros se fijan en uno de los siguientes valores: $+V_{cte}, 0, -V_{cte}$. 
+Existen 27 posibles combinaciones presentadas en la tabla \ref{table:pts_seq_vels} que se aplican en secuencias espaciadas en intervalos de 10s para medir la respuesta de los motores en dos escenarios como se muestra en la Fig. \ref{fig:vels_real_vs_des_mot}. Primero, solamente se utiliza el lazo de control a nivel de motor manteniendo abierto el lazo de control a nivel robot. La velocidad deseada de cada motor permanece constante tras recibir la señal y solo en algunos casos no se alcanzan las velocidades de robot deseadas. Esto sucede cuando la velocidad de motor requerida es superior a la \emph{no-load speed} del motor ,$(+V, +V, +V )$ y $(-V, -V, -V) $ para el motor 1. También sucede esto cuando la velocidad de motor requerida es muy baja, presentándose oscilaciones alrededor de esta, $(+V, -V, 0) $ y  $(+V, -V, -V)$.
+
+Después se prueba el lazo de control a nivel de robot que determina la velocidad requerida al lazo de control a nivel de motor, por lo que esta última no es constante. En todos los casos se alcanzan y mantienen las velocidades de robot independientemente de que se consigan las velocidades requeridas de motor. En algunos casos, $(+V, +V, +V )$ y $(+V, +V, -V)$, la respuesta es lenta aunque esto se puede mejorar sintonizando $k_p$ y $k_i$.
+
+
+% En las pruebas para el primer escenario, la velocidad deseada de cada motor permanece constante una vez recibida la señal. Aunque en la mayoría de las combinaciones se alcanzan las velocidades de motor deseadas, resaltan 2 casos específicos. En el primero, en ciertas combinaciones como $(+V, +V, +V )$ y $(-V, -V, -V) $ para el motor 1, no se alcanza la velocidad deseada por ser mayor a la velocidad sin carga de 72 RPS.
+
+ % El segundo caso se presenta en combinaciones como $(+V, -V, 0) $ y  $(+V, -V, -V)$ , en las cuales la velocidad deseada para algún motor es muy baja para que el motor la pueda mantener por lo que comienza a oscilar alrededor de ésta. En ambos casos, el que uno o más motores no alcancen ni se mantengan en la velocidad deseada repercute en el vector de velocidades reales del robot: en ambos casos, no se alcanzan las velocidades deseadas pero en el segundo además se presenta una oscilación importante.
+% \par
+% En el segundo escenario, la velocidad deseada de motor no es constante ante cada entrada ya que es determinada por el ciclo de control a nivel robot. Aunque no siempre se alcanzan las velocidades deseadas por motor, sí se alcanzan y se mantienen las velocidades del vector $(X, Y, \theta )$. En algunos casos como $(+V, +V, +V )$ y $(+V, +V, -V) $, se tarda mucho en alcanzar la velocidad deseada aunque esto se puede mejorar utilizando otros valores $k_p$ y $k_i$.
+% \par
+
+
+\begin{table}
+\centering
+\caption{Secuencia para las pruebas a Nivel de Motor}
+\begin{tabular}{l|c c c | | l | c c c || l | c c c}
+
+\# & X & Y & $\theta$ & \# & X & Y & $\theta$ & \# & X & Y & $\theta$  \\
+\hline
+0   &  0 &  0 &  0 &  9 & +V &  0 &  0 & 18 & -V &  0 &  0 \\
+1   &  0 &  0 & +V & 10 & +V &  0 & +V & 19 & -V &  0 & +V \\
+2   &  0 &  0 & -V & 11 & +V &  0 & -V & 20 & -V &  0 & -V \\
+3   &  0 & +V &  0 & 12 & +V & +V &  0 & 21 & -V & +V &  0 \\
+4   &  0 & +V & +V & 13 & +V & +V & +V & 22 & -V & +V & +V \\
+5   &  0 & +V & -V & 14 & +V & +V & -V & 23 & -V & +V & -V \\
+6   &  0 & -V &  0 & 15 & +V & -V &  0 & 24 & -V & -V &  0 \\
+7   &  0 & -V & +V & 16 & +V & -V & +V & 25 & -V & -V & +V \\
+8   &  0 & -V & -V & 17 & +V & -V & -V & 26 & -V & -V & -V \\
+% \hline
+% \multicolumn{3}{c}{Datos en RPS}
+\end{tabular}
+\label{table:pts_seq_vels}
+\end{table}
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth,height=0.9\textheight]{160517-vels-motVSmotrob.eps}
+	\caption{Velocidades Deseadas vs Velocidades Reales}
+	\label{fig:vels_real_vs_des_mot}
+\end{sidewaysfigure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \NOTE{Lo siguiente falta cambiarlo...}
+
+
+\subsection{Pruebas de Integración con el Sistema Externo}
+\label{subsec:pruebas_sin_vision}
+Para las siguientes pruebas, se establecen puntos que el robot debe alcanzar y se utiliza el sistema computacional externo para definir los perfiles de velocidad y captura de datos. Como se muestra en la Fig. \ref{fig:8pts_without_vision}, se define una circunferencia con centro en $P_0$ y 8 puntos ${P_A, P_B, ..., P_H}$ en la circunferencia tales que: $\angle P_nP_0P_{n+1} = 45^\circ $. La prueba realizada consiste en colocar al robot en $P_0$, siempre orientado a $P_C$. El sistema externo calcula la velocidad $(V_x,V_y,\omega)$ para dirigir el robot a cada uno de los 8 puntos. 
+
+\subsubsection{Pruebas Sin Retroalimentación de Visión}
+En estas pruebas el sistema externo es usado para generar y enviar la velocidad inicial deseada además de capturar las poses del robot en el tiempo. La Fig. \ref{fig:8pts_without_vision} muestra las trayectorias ideales y 10 repeticiones de trayectorias reales. Cada punto representa el centro del robot, el tamaño del robot en la escala utilizada se muestra en la esquina inferior derecha. Adicionalmente, se muestra una tendencia lineal obtenida a partir de los datos graficados. 
+
+% La Fig. \ref{fig:8pts_without_vision} muestra la posición de los puntos $P_0, P_1, ..., P_8$ así como los vectores que idealmente seguiría el robot a cada punto. También se muestran las trayectorias reales seguidas por el robot en cada una de 10 repeticiones a cada punto. A partir de estos datos, se obtuvo una tendencia del movimiento del robot a cada punto. 
+% \par
+% Cada dato de la trayectoria del robot representa la posición del centro del robot a un tiempo determinado. Por claridad, cada punto está representado con dimensiones menores a las del robot, el área que ocupa en realidad el robot es un círculo de 90 mm de radio; en la gráfica se muestra el un punto escala 1:1 en la esquina inferior derecha. Debido a las características particulares del sistema de visión, éste no reporta la posición del robot si se encuentra cercano al extremo derecho (donde se encuentra $P_3$) aunque el robot se encuentra en esa zona.
+% \par
+% \subsubsection{Movimiento en el Plano}
+Para el movimiento traslacional, se obtuvo el mejor desempeño en dirección al punto $P_C$ y a $P_G$ donde mantiene lineas casi rectas. En dirección a $P_B$ y a $P_D$ las trayectorias son curvas, cruzando al vector de dirección ideal. En dirección a $P_F$ y $P_H$ tenemos los mayores errores aunque el ciclo de control a nivel robot corrige el movimiento para llegar al punto objetivo. Las trayectorias hacia $P_A$ y $P_E$ presentan el peor desempeño sin alcanzar el punto objetivo en ninguna ocasión. 
+
+En movimiento rotacional, se mantuvo la velocidad en angular en 0 para mantener la orientación del robot. En la Fig. \ref{fig:orient_without_vision} se observa la orientación del robot en cada prueba. Se obtuvo el mejor desempeño en dirección a los puntos $P_C$ y $P_G$. En dirección a $P_B, P_D, P_F$ y $P_H$, el error es mayor aunque en la mayoría de los casos es menor a 30 grados. Solo en dirección a $P_A$ y $P_E$, el error llega a sobrepasar los 30 grados, aunque es mayor en las trayectorias al punto $P_A$. El error en la orientación del robot en las trayectorias a cada punto es consistente con el error en su movimiento traslacional.
+
+En ambos casos, los errores se reflejan en el eje X. Las direcciones del error para los puntos $P_1, P_2 $ y $P_8$ es la contraria que para los puntos $P_4, P_5$ y $P_6$. Esto indica que al menos para la $k_i$ utilizada en el ciclo de control de velocidades del robot se podría encontrar un valor más adecuado.
+% La dirección que mejor desempeño mostró en estas pruebas fue $(+V, 0, 0)$ al punto 3. Aunque se tiene cierta varianza, en la mayoria de los casos el robot llega directo al punto 3 en linea prácticamente recta. La tendencia casi coincide don el vector que idealmente seguiría el robot. Para la dirección $(-V, 0, 0)$ a $P_7$ se presenta un desempeñomuy similar teniendo una clara desviación hacia el la dirección $+Y$ del eje coordenado del robot. El robot mantiene una trayectoria casi recta en la mayoria de los casos, la línea de tendecia pasa muy cerca de $P_7$.
+
+% Las direcciones $(+V, -V, 0)$ y $(+V, +V, 0)$ a los puntos $P_2$ y $P_4$ respectivamente, presentan resultados muy similares. En ambos casos, las trayectorias del robot son curvas, cruzando al vector de dirección ideal. A pesar de ésto, la tendencia queda muy cercana al punto objetivo dentro de las dimensiones del robot. \par
+% Las direcciones $(-V, -V, 0)$ y $(-V, +V, 0)$ a los puntos $P_6$ y $P_8$ respetivamente, presentan errores importantes en las trayectorias. En estos dos casos, se observa la acción del ciclo de control a nivel robot al correjir el movimiento y llegar al punto objetivo. Las tendencias quedan muy cerca de los puntos objetivos aunque ambas atraviezan los vectores de dirección ideal. Especialmente la tendencia de las trayectorias al punto $P_6$ queda muy cercana al punto aunque existe una varianza importante. 
+
+% Por último, las direcciones $(0, +V, 0)$ y $(0, -V, 0)$ a los puntos $P_1$ y $P_5$ son las que presentan el peor desempeño teniendo un error importante respecto al punto objetivo, no alcanzándolo en ninguna ocación. Las líneas de tendencia muestran una clara desviación respecto a los vectores de trayectoria ideal. Estos resultados reflejan la eficiencia de los valores utilizados para $k_p$ y $k_i$ del control PI, modificando estos valores se podrían obtener mejores resultados. 
+% \par
+% En la Fig. \ref{fig:8pts_without_vision} se puede observar que las trayectorias del robot parecen reflejarse alrededor del eje X. Al moverse solamente en ésta dirección es que el robot presenta mejores resultados. 
+% \par
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth,height=0.9\textheight]{8pts260517-without-vision.eps}
+	\caption{Trayectorias sin Retroalimentación de Visión}
+	\label{fig:8pts_without_vision}
+\end{sidewaysfigure}
+
+% \subsubsection{Orientación}
+% A partir de los mismos datos utilizados en la subsección pasada, en la Fig. \ref{fig:orient_without_vision}
+% se muestra el error en la orientación para cada prueba realizada a cada punto. Los datos presentan saltos debido a que solo se presenta la orientación durante el movimiento del robot de $P_0$ al punto deseado, no del reposicionamiento a $P_0$.
+% \par
+% La orientación del robot durante las trayectorias a los puntos $P_3$ y $P_7$ son las que menor error presentaron. Para los puntos $P_2, P_4, P_6$ y $P_8$, el error en la orientación es mayor aunque (salvo en dos pruebas) el error es menor a 0.5 radianes. Para estos casos, el error comienza en una dirección y generalmente existe una sobrecompensación de éste error llevandolo a la dirección contraria. La orientación en las trayectorias a los puntos $P_1$ y $P_5$, el error sobrepasa los 0.5 radianes en la mayoría de las pruebas, aunque es mayor en las trayectorias al punto $P_1$. 
+% \par
+% En error en la orientación del robot en las trayectorias a cada punto es consistente con el error en su movimiento en el plano. Los errores en la orientación también se reflejan en el eje X del robot: las direcciones del error para los puntos $P_1, P_2 $ y $P_8$ es la contraria que para los puntos $P_4, P_5$ y $P_6$.
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth,height=0.9\textheight]{8pts260517-without_vision-multi-theta.eps}
+	\caption{Error en la Orientación del Robot en las Pruebas sin Retroalimentación de Visión}
+	\label{fig:orient_without_vision}
+\end{sidewaysfigure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pruebas con Retroalimentación de Visión y Trayectoria Dinámica}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \NOTE{Se podría agregar imágen con el tercer lazo cerrado de vision}
+El objetivo de éstas pruebas es validar el movimiento del robot ante un ambiente dinámico donde la trayectoria deseada cambia rápidamente. Se utiliza un sistema externo desarrollado sobre \gls{ROS} con la arquitectura mostrada en la Fig. \ref{fig:arq_gral}.  El subsistema de \textit{Visión} utiliza cámaras en la parte superior del área de pruebas para determinar la pose real del robot respecto al mundo. A partir de ésta información, el subsistema \textit{Planeación} determina la ruta deseada para el robot de acuerdo al comportamiento deseado. Para éstas pruebas, el comportamiento consiste en alcanzar cada uno de los puntos $P_A, ..., P_H$ con la secuencia: $P_A, P_0, P_B, P_0, ..., P_G, P_0, P_H, P_0$. La ruta generada para las pruebas siempre es una recta entre la posición del robot y el punto objetivo, debido a la ausencia de obstáculos a esquivar. El subsistema de control genera una trayectoria para seguir la ruta establecida. La trayectoria consiste en puntos \textit{atractores} intermedios entre el punto inicial y el objetivo. Los puntos no son necesariamente alcanzados por el robot debido a la alta frecuencia con la que se actualiza el siguiente punto atractor. El control a bajo nivel genera el perfil de velocidad para dirigir al robot al punto atractor y envía el perfil al robot. El sistema externo está limitado por la frecuencia de 25Hz del subsistema de visión.
+
+ % definidos anteriormente. La generación de rutas encuentra una ruta viable (al no existir obstáculos, la ruta siempre será una línea recta). El módulo de control genera la trayectoria para seguir la ruta generada. La trayectoria consiste en puntos intermedios entre la posición del robot y el punto objetivo. Es importante resaltar que el sistema asume que el robot no va a llegar a los puntos intermedios generados por la trayectoria ya que se actualizan antes de alcanzarlo, funcionan como \textit{puntos atractores}. El control a bajo nivel determina el vector de velocidad deseada del robot $(X, Y, \theta)$ y le envía la información al robot. La operación y algoritmos utilizados en cada módulo escapa el alcance de éste documento.
+% \par
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth]{arqGeneral.eps}
+	\caption{Arquitectura del Sistema Utilizado}
+	\label{fig:arq_gral}
+\end{figure}
+
+% El comportamiento programado para éstas pruebas consiste en que el robot (colocado inicialmente en $P_0$visite cada punto en la siguiente secuencia: $P_1, P_0, P_2, P_0, ..., P_7, P_0, P_8, P_0$. Todo de forma autónoma manteniendo la orientación del robot con dirección a $P_3$. 
+
+En movimiento traslacional, debido a los cambios en el tiempo de los puntos intermedios, las trayectorias no necesariamente son rectas. Sin embargo, el robot siempre alcanza los puntos objetivo deseados. En la Fig. \ref{fig:8pts_vision_multi} se muestra la respuesta del robot en las 10 pruebas realizadas. Para cada prueba se grafica la trayectoria deseada (generada por el subsistema de control desde el sistema externo) así como la trayectoria real seguida por el robot.
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth,height=0.9\textheight]{8pts260517-with_vision-multi.eps}
+	\caption{Movimiento del Robot con Retroalimentación de Visión y Trayectorias Dinámicas}
+	\label{fig:8pts_vision_multi}
+\end{sidewaysfigure}
+
+El error en la orientación del robot en el tiempo se muestra en la Fig. \ref{fig:orient_vision_multi}. El error es mínimo solo llegando en una ocasión a ser de 60 grados. 
+El subsistema de control en el sistema externo considera una tolerancia para la orientación de $\pm 6$ grados por lo que el sistema no genera velocidad rotacional para corregir si el error es menor a la tolerancia.
+
+% En movimiento rotacional, el error es mínimo solo llegando en una ocasión a ser de 1 radian. En la Fig. \ref{fig:orient_vision_multi} se muestra el error en la orientación del robot en el tiempo para cada prueba realizada. El módulo de control considera una tolerancia para la orientación de $\pm 0.1$ radianes. El sistema no genera velocidad en $\theta$ para corregir el error si éste es menor a la tolerancia indicada. 
+La tabla~\ref{tab:SinVisionConVision} muestra una comparación de la norma cuadrada de los errores en pose $(e_X,e_Y,e_\theta)$ que muestra el mejor desempeño esperado cuando se usa retroalimentación con visión. En la mayoría de los casos el error a lazo abierto es de 3 a 5 veces el obtenido a lazo cerrado. En orientación no se obtienen tales mejoras, pero hay que notar que desde antes el error era mínimo pues la velocidad angular deseada era muy baja y en el caso de lazo cerrado no necesariamente es el caso. Lo mismo aplica para la velocidad en Y en dirección a $P_C$ y a $P_G$.
+
+%%%%%%%%%%%%%%% begin table   %%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t]
+\begin{center}
+
+\begin{tabular}{|c||l|l|l||l|l|l|}
+% & & \\ % put some space after the caption
+\hline
+\multirow{2}{*}{Punto} 
+      & \multicolumn{3}{c||}{Sin Visión} 
+          & \multicolumn{3}{|c|}{Con Visión} \\  \cline{2-7}
+          
+ & $e_X$ & $e_Y$ & $e_\theta$ & $e_X$ & $e_Y$ & $e_\theta$ \\
+\hline
+A & 27.95 & 70.94 & 2.2231  &  5.04 & 21.42 & 1.3923	\\
+B & 26.06 & 26.15 & 0.5271  &  7.22 &  8.26 & 0.7735	\\
+C & 22.91 &  0.82 & 0.1261  &  6.57 &  1.54 & 0.2521	\\
+D & 10.66 & 11.16 & 0.2521  &  3.62 &  3.33 & 0.2578	\\
+E &  5.72 & 14.28 & 0.3724  &  1.54 &  4.06 & 0.3266	\\
+F &  5.89 &  8.75 & 0.1891  &  2.34 &  2.78 & 0.2807	\\
+G &  8.88 &  0.65 & 0.0688  &  2.77 &  0.66 & 0.1318	\\
+H &  4.97 &  6.75 & 0.1375  &  1.66 &  2.16 & 0.1089	\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Norma cuadrada de los errores $e_X$ [mm],  $e_Y$ [mm] y $ e_\theta$ [grados]}
+\label{tab:SinVisionConVision}
+\end{table}
+%%%%%%%%%%%%%%% END TABLE   %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% En las 10 pruebas realizadas, el error en la orientación del robot solamente llega a 1 radian en una ocasión. En 20 ocaciones el valor absoluto del error es mayor a 0.5 radianes aunque es corregido y regresa a estar dentro del rango deseado. 
+% \par
+
+% \subsubsection{Movimiento en el Plano}
+% En la Fig. \ref{fig:8pts_vision_multi} se muestra la respuesta del robot en las 10 pruebas realizadas. Para cada prueba, se grafica la trayectoria deseada (generada por el módulo de control) así como la trayectoria real seguida por el robot. 
+
+% Por la forma en que opera la generación de trayectorias, no se espera que todos los puntos intermedios sean alcanzados pero sí que el robot sea capaz de dirigirse a ellos creando trayectoria de forma similar a la deseada. Esto sucede en todas las pruebas realizadas, donde la trayectoria real del robot es muy similar a la deseada, alcanzando todos los puntos. En éstas pruebas se puede notar el efecto que tiene el error analizado en \ref{subsec:pruebas_sin_vision} en las trayectorias reales del robot. En los puntos en que sin visión se presenta mayor error son también a los puntos que la trayectoria se realiza con un arco más pronunciado. 
+
+
+
+
+% \subsubsection{Orientación}
+% En la Fig. \ref{fig:orient_vision_multi} se muestra el error en la orientación del robot en el tiempo para cada prueba realizada. El módulo de control considera una tolerancia para la orientación de $\pm 0.1$ radianes. El sistema no genera velocidad en $\theta$ para corregir el error si éste es menor a la tolerancia indicada. 
+% \par
+% En las 10 pruebas realizadas, el error en la orientación del robot solamente llega a 1 radian en una ocasión. En 20 ocaciones el valor absoluto del error es mayor a 0.5 radianes aunque es corregido y regresa a estar dentro del rango deseado. 
+% \par
+
+\begin{sidewaysfigure}
+	\centering
+		\includegraphics[width=\textwidth,height=0.9\textheight]{8pts260517-with_vision-multi-theta.eps}
+	\caption{Velocidades Deseadas vs Velocidades Reales}
+	\label{fig:orient_vision_multi}
+\end{sidewaysfigure}
+
+
+\section{Comparación con Otros Robots SSL}
+A continuación se realiza una comparación con los cinco mejores equipos de Robocup \gls{SSL} 2016. Se toman los datos reportados en los \textit{Team Description Paper} de cada equipo. Los equipos comparados son: \textit{MRL} [~\cite{poudeh2016mrl}, \cite{adhami2012mrl}], \textit{CMDragons} [~\cite{biswas2013cmdragons}, \cite{zickler2010cmdragons}], \textit{ZJUNlict} [~\cite{zhao2013zjunlict}], \textit{Robodragons} [~\cite{adachi2016robodragons}] y \textit{ER-Force} [~\cite{er-force-2016}, \cite{tdp-er-2014}].Todos los equipos han estado compitiendo por al menos tres años de manera continua.
+
+%mecánica
+La mayor parte de las piezas de los robots de los equipos están fabricadas con aluminio con algunas partes hechas con otros materiales. De manera similar al diseño presentado, todos los equipos utilizan cuatro ruedas omnidireccionales con un tren de engranes y motores Maxon. Cada equipo utiliza ruedas propias, con diferente número de rodillos y diámetro de rueda, aunque la presentada en éste trabajo es la mayor. La proporción de reducción del tren de engranes varía en cada equipo aunque está entre 3 y 4. La carcasa de cada equipo es diferente, salvo ER-Force que solamente cuenta con tapa, los demás cuentan con protección lateral. Todos los equipos han implementado algún tipo de solución para acceder rápidamente a los componentes internos del robot aunque ninguno presenta una solución para acoplar/desacoplar la tapa con imanes. Destaca que los equipos que cuentan con protección lateral utilizan una sola pieza para la carcasa, mientras que la solución propuesta utiliza en total 4 piezas. 
+
+
+La electrónica de todos los equipos es compacta al estar integrada mediante \gls{PCB}. Una de las principales diferencias entre los equipos radica en los sistemas de cómputo. De manera similar a la solución implementada, MRL, CMDragons y Robodragons distribuyen el cómputo en una FPGA y un microcontrolador. Todos utilizan la FPGA para el manejo de señales aunque MRL implementó las funciones de control directamente en la FPGA, utilizando el microcontrolador para otros procesos. ZJUNlict implementa todo mediante una FPGA donde implementa un procesador para el manejo de funciones específicas. Solamente ER-Force utiliza un microcontrolador para implementar todas las funciones requeridas. Aunque todos los equipos utilizan la retroalimentación de motores, solamente ZJUNlict detalla el algoritmo utilizado, siendo similar al implementado en este trabajo. 
+
+Todos los equipos implementan funciones de control a nivel motor ya sean PI o PID. Ninguno de los equipos considerados implementa un segundo lazo de control a nivel robot como en la solución presentada. Solamente ER-Force especifica que utilizan el método \textit{Ziegler-Nichols} para la sintonización manual del PID. Destaca el diseño completamente modular de ER-Force en la electrónica, manteniendo \gls{PCB}s independientes para cada componente. Ningún equipo detalla en las baterías utilizadas.
+
+Todos los equipos presentan soluciones únicas respecto a los aditamentos para el juego. Para el \gls{Dribbler}, a diferencia de la solución presentada, todos utilizan motores sin escobilla. Para el \gls{Kicker}, utilizan tanto un circuito de carga a 200V aunque los tiempos de carga varían. Es en estos componentes donde es común que se hagan cambios cada año tanto de forma como de material. 
+
+Para la comunicación inalámbrica, solamente Robodragons utiliza radios WiFi aunque todos utilizan comunicación en la banda de 2.4Ghz. La principal razón que presentan para no utilizar WiFi es poder definir un protocolo específico de comunicación entre el sistema y el robot, pudiendo tener comunicaciones más rápidas y con menos interferencia. Una de las ventajas de la solución implementada es que no depende de una tecnología de comunicación inalámbrica específica, pudiendo cambiar el módulo fácilmente. A pesar de esto, WiFi utilizando UDP a probado ser efectivo en las pruebas realizadas.
+
+No se realizan comparaciones de desempeño debido a que no se cuenta con los datos necesarios de los otros equipos. 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%% NO SE UTILIZA   %%%%%%%%%%%%%
+
+\EXCISE{
+El ciclo de control implementado se muestra en la Fig. \ref{fig:esquema_control}. El sistema es el encargado de generar la pose deseada, la trayectoria y el vector de velocidades \( (X, Y, \theta) \), el cual se envía al robot. El robot calcula el vector de velocidades de motor deseadas \( (M_1, M_2, M_3, M_4) \) y manda la señal adecuada a cada motor. Se cuenta con un lazo cerrado por motor con un sistema PI (Control a Nivel Motor). Además, existe un lazo cerrado conformado por la visión del sistema, la cual reporta la posición real del sistema a una frecuencia conocida, pudiendo rectificar la trayectoria y por tanto el vector de velocidad del robot deseado (Control a Nivel Robot). \par
+
+
+En las pruebas que involucran trayectorias deseadas y reales, se genera una trayectoria recta entre la posición inicial del robot (punto 0) y la final deseada. La posición final deseada es uno de 8 puntos presentados en la Tabla \ref{table:pts_trays}. La orientación inicial del robot es en dirección al punto 1 mientras que la posición final de \(\theta\) es fija al menos que se especifique lo contrario.\par
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth]{esquema_ciclo_ctrl}
+	\caption{Esquema de Control General}
+	\label{fig:esquema_control}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{Puntos utilizados para Pruebas de Trayectorias}
+\begin{tabular}{l|c c }
+
+Punto & X & Y  \\
+\hline
+0   &  0 &  0 \\
+1   &  0 & +1 \\
+2   & +1 & +1 \\
+3   & +1 &  0 \\
+4   & +1 & -1 \\
+5   &  0 & -1 \\
+6   & -1 & -1 \\
+7   & -1 &  0 \\
+8   & -1 & +1 \\
+% \hline
+% \multicolumn{3}{c}{Datos en RPS}
+\end{tabular}
+\label{table:pts_trays}
+\end{table}
+
+\section{Control a Nivel Motor}
+
+En la Fig.  \ref{fig:esquema_niv_mot} se muestra un esquema del ciclo de control a Nivel Motor utilizado. A partir del vector de velocidades deseadas \((X, Y, \theta) \) se calculan las velocidades de motor y se utiliza la retroalimentación de cada motor para calcular su velocidad real. Se implementó un algoritmo PI para disminuir el error. Los coeficientes \( k_p \) y \( k_i \) se calcularon con el método Ziegler–Nichols. \par
+En la Tabla \ref{table:vels_1-0} se muestran los vectores de \textit{Velocidad Deseada} utilizados en el segundo especificado, así como el \textit{Valor Esperado} de cada motor. En la Fig. \ref{fig:vels_niv_motor} se muestra la respuesta de cada motor ante cada vector dado (\textit{Velocidad Deseada}) así como el promedio móvil de la señal de respuesta. La salida de cada motor es consistente con los \textit{Valores Esperados} presentados en la Tabla \ref{table:vels_1-0}. \par
+En la Fig. \ref{fig:vels_niv_motor}, se aprecia la rápida respuesta de los motores ante los cambios bruscos en la velocidad deseada. El efecto de la parte proporcional del algoritmo PI se puede apreciar en los cambios de velocidad más bruscos al presentar algunos valores extremos ``\textit{picos}''. Las oscilaciones se presentan alrededor de la velocidad deseada, el promedio y desviación estándar del error para cada motor se muestran en la Tabla \ref{table:prom_std_vels_mots}. Los cuatro motores presentan error promedio y desviación estándar del error menor a 3 RPS. El motor con menor error promedio y desviación estándar es el 3. El mayor promedio lo tiene el motor 2 aunque la mayor desviación estándar la tiene el motor 1. Los errores de mayor magnitud se registran en los cambios de velocidad deseada. \par
+Utilizando únicamente las velocidades reales de cada motor, se calcula el vector de velocidades \( X, Y, \theta ) \). En la Fig. \ref{fig:vels_niv_rob} se muestran las gráficas correspondientes al vector, a partir de la información de la Tabla \ref{table:vels_1-0} y de la Fig. \ref{fig:vels_niv_motor}. \par
+
+En los 3 casos la velocidad real alcanza rápidamente la deseada y se presentan oscilaciones alrededor de la velocidad deseada. Éstas oscilaciones son mayores en X y Y que en \(\theta\). Las oscilaciones se presentan mientras una de las velocidades deseadas sea diferente de 0, como consecuencia de los errores de cada motor. En la Tabla \ref{table:prom_std_vels_rob} se presenta el promedio y la desviación estándar del valor absoluto del error del vector \(X, Y, \theta ) \). La diferencia entre el promedio de X y Y se puede explicar por el ángulo que tiene cada rueda respecto a los ejes, siendo la desviación estándar similar. Tanto el promedio del valor absoluto del error como la desviación estándar para \(\theta\) se puede considerar bajo. \par
+
+En la Fig. \ref{fig:tray_sin_vision} se muestran las trayectorias deseadas y las reales realizadas utilizando solamente el ciclo de control a nivel motor. Las trayectorias a los puntos 2 y 8 fueron satisfactorias al seguir la trayectoria hasta detenerse. Las trayectorias a los puntos 1, 3, 4 y 7 presentan errores relacionados principalmente a una dirección X o Y. La trayectoria a 1 presenta error en X mientras que 3, 4 y 7 presentan error en Y. La trayectoria a 5 presenta errores importantes en ambas direcciones. La trayectoria 6 inicia correctamente pero termina teniendo un error significativo en X. Es relevante que a las trayectorias a 2 y 8, las de menor error, solamente se utilizan 2 de los 4 motores. La trayectoria a 5, con error en ambas direcciones se utilizan los 4 motores. \par
+
+
+
+
+\begin{table}
+\centering
+\caption{Velocidades Deseadas y Valores de Motor Esperados}
+\begin{tabular}{l||c c c|| c c c c }
+Tiempo & \multicolumn{3}{c||}{Vel. Deseada} & \multicolumn{4}{c}{Valor Esperado} \\
+(seg)     & X & Y & \(\theta\) & \(M_1\) & \(M_2\) & \(M_3\) & \(M_4\) \\
+\hline
+31.5 	& +1 &  0 &  0 & +1 & -1 & -1 & +1 \\
+37      & -1 &  0 &  0 & -1 & +1 & +1 & -1 \\
+43      &  0 & +1 &  0 & +1 & +1 & -1 & -1 \\
+48.5    &  0 & -1 &  0 & -1 & -1 & +1 & +1 \\
+54.5 	&  0 &  0 & +1 & +1 & +1 & +1 & +1 \\
+61      &  0 &  0 & -1 & -1 & -1 & -1 & -1 \\
+69.5    & +1 & +1 &  0 & +1 &\(\approx0\)& -1 &\(\approx0\)\\
+78      & +1 & -1 &  0 &\(\approx0\)& -1 &\(\approx0\)& +1 \\
+84	    & -1 & +1 &  0 &\(\approx0\)& +1 &\(\approx0\)& -1 \\
+89.5    & -1 & -1 &  0 & -1 &\(\approx0\)& +1 &\(\approx0\)\\
+99      & +1 & +1 & +1 & +1 & +1 & \(\approx0\) & +1 \\
+109     & -1 & -1 & -1 & -1 & -1 & \(\approx0\) & -1 \\
+\end{tabular}
+\label{table:vels_1-0}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Promedio y Desviación Estándar del Error de Cada Motor}
+\begin{tabular}{l|c c }
+
+     & \(\overline{X}\) & S  \\
+\hline
+\(M_1\)   & 1.27863671233 & 2.90393688123 \\
+\(M_2\)   & 1.50803068493 & 2.85232801587 \\
+\(M_3\)   & 1.16900712329 & 2.27669407530  \\
+\(M_4\)   & 1.29058191781 & 2.59304234670  \\
+\hline
+\multicolumn{3}{c}{Datos en RPS}
+\end{tabular}
+\label{table:prom_std_vels_mots}
+\end{table}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth]{esquema_PID_motor}
+	\caption{Esquema del Control a Nivel Motor}
+	\label{fig:esquema_niv_mot}
+\end{figure}
+
+
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth,height=.9\textheight]{Velocidades-Multi_mot}
+	\caption{Velocidades a Nivel Motor}
+	\label{fig:vels_niv_motor}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth]{trayectoria_sin_vision}
+	\caption{Trayectorias Sin Retro-Alimentación de Visión}
+	\label{fig:tray_sin_vision}
+\end{figure}
+% \begin{itemize}
+% 	\item Mostrar gráficas 310516/Test1/* ==> respuesta de cada motor ante entradas deseadas \ref{fig:vels_niv_motor}
+% 	\item Calibración de valores Kp y Ki
+% 	\item Programa para ver valores en tiempo real
+
+% \end{itemize} \par
+
+\begin{table}
+\caption{Promedio y Desviación Estándar del Error de Cada Grado de Libertad}
+\centering
+\begin{tabular}{l|c c }
+
+     & \(\overline{X}\) & S  \\
+\hline
+\(X^{*}\)    & 0.089694009217 & 0.11096394154  \\
+\(Y^{*}\)    & 0.058801843318 & 0.12510516254  \\
+\(\theta^{**}\)  & 0.101625806452 & 0.12736133357  \\
+
+\hline
+\multicolumn{3}{c}{\(^{*}\) datos en m/s.} \\
+\multicolumn{3}{c}{\(^{**}\) datos en rad/s}
+\end{tabular}
+\label{table:prom_std_vels_rob}
+\end{table}
+
+
+
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth,height=.9\textheight]{Velocidades-Multi_rob}
+	\caption{Velocidades a Nivel Robot}
+	\label{fig:vels_niv_rob}
+\end{figure}
+
+
+\section{Control a Nivel Robot}
+
+
+
+\begin{itemize}
+	\item Mostrar gráficas de respuesta en X, Y y W
+	\item Mostrar gráfica con 10 reps en cada una de las 8 direcciones\ref{fig:vels_niv_rob} 
+	\item Mostrar gráficas de errores de las 10 reps.
+
+
+\begin{figure}
+	\centering
+	\makebox[0pt]{
+		\includegraphics[width=1.4\textwidth]{trays_10reps_vision}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  	}
+	\caption{Trayectorias Real vs Deseada- con Visión (10 Repeticiones)}
+	\label{fig:trays_10reps}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\makebox[0pt]{
+		\includegraphics[width=1.4\textwidth,height=.9\textheight]{tray_10reps_forward} 
+		}
+	\caption{Trayectorias Real vs Deseada- con Visión (10 Repeticiones)}
+	\label{fig:errs_10reps_forward}
+\end{figure}
+
+
+\begin{figure}
+	\centering
+	\makebox[0pt]{
+		\includegraphics[width=1.4\textwidth,height=.9\textheight]{tray_10reps_backward} 
+		}
+	\caption{Trayectorias Real vs Deseada- con Visión (10 Repeticiones)}
+	\label{fig:errs_10reps_backward}
+\end{figure}
+
+
+\end{itemize} \par
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
