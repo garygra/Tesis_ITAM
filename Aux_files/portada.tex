@@ -1,39 +1,49 @@
+\renewcommand{\maketitle}
+{
 \thispagestyle{empty}
 \begin{titlepage}
 	\begin{center}
 	\vspace{70pt}
 		\begin{tabular}{c}
-			\Large \emph{\textsc{
-				Instituto Tecnológico Autónomo de México
+			\Large 
+			\emph
+			{
+			    \textsc
+			    {
+				    Instituto Tecnológico Autónomo de México
 				}
-			}\\
+			} \\
 			\hline
 		\end{tabular}\\
 		\vspace{25pt}
-		\includegraphics[width=10cm,height=2.8cm]{Figures/logo-ITAM_new.png}\\
+		\includegraphics[width=10cm]{Figures/logo-ITAM_new.png}\\
+% 		\includegraphics[width=10cm,height=2.8cm]{Figures/logo-ITAM_new.png}\\
 		\vspace{25pt}
-		{\huge \thetitle}\\
+		{\huge \@title}\\
+
 		\vspace{5pt}
 		\vspace{20 pt}
-		{\Large \thethesis } \\
+		{\Large \@thesis } \\
 		\vspace{5pt}
 		QUE PARA OBTENER EL TÍTULO DE \\
 		\vspace{5pt}
-		{\Large \thedegree} \\
+		{\Large \@degree} \\
 		\vspace{5pt}
 		PRESENTA \\
 		\vspace{5pt}
-		{\Large \theauthor} \\
+		{\Large \@author} \\
 		\vfill
 		ASESOR \\
-		{\Large \theadvisor} \\
+		{\Large \@advisor} \\
 		\vspace{5pt}
 		\begin{tabular}{lcr}
-			CDMX. & \hspace{60pt} & \theyear
+			CDMX. & \hspace{60pt} & \@thesisYear
 		\end{tabular}
 	\end{center}
 
-	% \global\let\newpagegood\newpage
- %    \global\let\newpage\relax
+% 	\global\let\newpagegood\newpage
+%     \global\let\newpage\relax
+% \fi
 \end{titlepage}
+}
 % \global\let\newpage\newpagegood

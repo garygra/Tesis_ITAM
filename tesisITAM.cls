@@ -1,6 +1,6 @@
 % 161018 	Gary 	edgar [dot] granados [at] itam [dot] mx
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{tesisITAM}[2018/10/16 v0.01 Template Tesis ITAM]
+\ProvidesClass{tesisITAM}[2018/10/16 v1 Template Tesis ITAM]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Opcion para declarar tesina %%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\@thesis{TESIS}
@@ -19,10 +19,12 @@
 \RequirePackage{graphicx}
 \RequirePackage{amsopn}
 \RequirePackage{fancyhdr}
+\RequirePackage{import}
+\RequirePackage[utf8]{inputenc}
 
 % babel
 \PassOptionsToPackage{english}{babel}
-\PassOptionsToPackage{spanish,es-tabla,es-nodecimaldot}{babel}
+\PassOptionsToPackage{spanish}{babel}
 \RequirePackage{babel}
 
 % Cambiar la bibliografía a REFERENCIAS
@@ -50,37 +52,25 @@
 
 
 % Definiciones de carrera
-\newcommand\@degree{\ClassWarningNoLine{tesisITAM}{No Degree specified}}
-\newcommand\degree[1]{\renewcommand\@degree{#1}}
-\newcommand\thedegree{\@degree}
+\newcommand{\@degree}{\ClassWarningNoLine{tesisITAM}{No Degree specified}}
+\newcommand{\degree}[1]{\renewcommand\@degree{#1}}
+% \newcommand\thedegree{\@degree}
 
 % Definiciones de asesor
-\newcommand\@advisor{\ClassWarningNoLine{tesisITAM}{No advisor specified}}
-\newcommand\advisor[1]{\renewcommand\@advisor{#1}}
-\newcommand\theadvisor{\@advisor}
+\newcommand{\@advisor}{\ClassWarningNoLine{tesisITAM}{No advisor specified}}
+\newcommand{\advisor}[1]{\renewcommand\@advisor{#1}}
+% \newcommand\theadvisor{\@advisor}
 
 % Definiciones del año
-\newcommand\@year{\ClassWarningNoLine{tesisITAM}{No year specified}}
-\renewcommand\year[1]{\renewcommand\@year{#1}} %Report ya tiene un comando \year
-\newcommand\theyear{\@year}
-
+\newcommand{\@thesisYear}{\ClassWarningNoLine{tesisITAM}{No year specified}}
+\newcommand{\thesisYear}[1]{\renewcommand\@thesisYear{#1}}
 
 % Portada 
-\renewcommand\maketitle{%
-	\InputIfFileExists {Aux_files/portada.tex} {\ClassInfo {tesisITAM} {portada.tex loaded}} {\ClassError{tesisITAM}{portada.tex not found!}}
-}
+\InputIfFileExists {Aux_files/portada.tex} {\ClassInfo {tesisITAM} {portada.tex loaded}} {\ClassError{tesisITAM}{Aux_files/portada.tex not found!}}
+
+
 % Derechos itam
-\newcommand\publicationrights{%
-	\InputIfFileExists {Aux_files/derechos.tex} {\ClassInfo {tesisITAM} {derechos.tex loaded}} {\ClassError{tesisITAM} {derechos.tex not found!}}
-}
-
-
-% \global\let\newpage\newpagegood
-
-% Comandos de titulo y autor
-\newcommand\thetitle{\@title}
-\newcommand\theauthor{\@author}
-\newcommand\thethesis{\@thesis}
+\InputIfFileExists {Aux_files/derechos.tex} {\ClassInfo {tesisITAM} {derechos.tex loaded}} {\ClassError{tesisITAM} {derechos.tex not found!}}
 
 % Resumen(es)
 \AtBeginDocument{\@ifpackageloaded{babel}{%
