@@ -39,6 +39,7 @@
 
 % Usar numeros romanos en las subsecciones
 \renewcommand\thesubsubsection{\Roman{subsubsection}}
+\setlength{\headheight}{13.1 pt}
 \setcounter{secnumdepth}{3}
 
 % Encabezados
